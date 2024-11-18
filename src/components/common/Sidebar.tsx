@@ -1,10 +1,13 @@
 'use client'
 
+import { PATHS } from '@/constants/paths'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Button } from '../ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 
 export default function Sidebar() {
+  const router = useRouter()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
@@ -25,6 +28,7 @@ export default function Sidebar() {
           <ul className='flex-1 p-4 space-y-2'>
             <li>
               <Button
+                onClick={() => router.push(PATHS.inventory.products.base)}
                 variant='ghost'
                 className='w-full justify-start text-white hover:bg-blue-800'
               >
@@ -34,19 +38,20 @@ export default function Sidebar() {
             <li>
               <Button
                 variant='ghost'
+                onClick={() => router.push(PATHS.attendees.clients)}
                 className='w-full justify-start text-white hover:bg-blue-800'
               >
                 Clientes
               </Button>
             </li>
-            <li>
+            {/* <li>
               <Button
                 variant='ghost'
                 className='w-full justify-start text-white hover:bg-blue-800'
               >
                 Relatórios
               </Button>
-            </li>
+            </li> */}
           </ul>
         </nav>
       </SheetContent>
