@@ -1,1 +1,0 @@
-//  # Funcionalidade de adição rápida
