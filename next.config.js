@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {}
+  images: {
+    domains: ['via.placeholder.com']
+  }
 }
 
 module.exports = nextConfig
