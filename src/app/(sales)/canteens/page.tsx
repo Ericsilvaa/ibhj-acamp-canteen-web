@@ -38,9 +38,9 @@ const HomePage: React.FC = () => {
               id={canteen.id}
               name={canteen.name}
               type={canteen.type}
-              responsible={canteen.responsible}
+              responsible={canteen.responsible.name}
               status={canteen.status}
-              profit={canteen.profit}
+              profit={canteen.sales.profit}
             />
           ))}
         </div>
