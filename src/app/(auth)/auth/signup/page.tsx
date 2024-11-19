@@ -1,16 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
+
 import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { auth } from '@/lib/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { Loader2, Lock, Mail, User } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-const SignUpPage: React.FC = () => {
+export default function SignUpPage() {
   const router = useRouter()
   const [name, setName] = useState('')
-  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -19,17 +30,17 @@ const SignUpPage: React.FC = () => {
 
   const handleSignUp = async () => {
     if (!email || !password || !confirmPassword) {
-      setError('Please fill in all fields')
+      setError('Por favor, preencha todos os campos.')
       return
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError('As senhas não coincidem.')
       return
     }
 
     setLoading(true)
-    setError('') // Limpa erros anteriores
+    setError('')
     try {
       await createUserWithEmailAndPassword(auth, email, password)
       router.push('/')
@@ -37,8 +48,8 @@ const SignUpPage: React.FC = () => {
       console.error('Error during sign-up:', err.message)
       setError(
         err.code === 'auth/email-already-in-use'
-          ? 'Email is already in use'
-          : 'Something went wrong. Please try again later.'
+          ? 'Email já está em uso.'
+          : 'Algo deu errado. Tente novamente mais tarde.'
       )
     } finally {
       setLoading(false)
@@ -46,64 +57,135 @@ const SignUpPage: React.FC = () => {
   }
 
   return (
-    <div className='p-6 max-w-md mx-auto'>
-      <h1 className='text-2xl font-bold mb-4'>Sign Up</h1>
-      <Input
-        type='Name'
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder='Name'
-        className='w-full border rounded px-3 py-2 mb-4'
-        aria-label='Name address'
-      />
-      <Input
-        type='lastName'
-        value={lastName}
-        onChange={(e) => setLastName(e.target.value)}
-        placeholder='Last Name'
-        className='w-full border rounded px-3 py-2 mb-4'
-        aria-label='Last Name'
-      />
-      <Input
-        type='email'
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder='Email'
-        className='w-full border rounded px-3 py-2 mb-4'
-        aria-label='Email address'
-      />
-      <Input
-        type='password'
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder='Password'
-        className='w-full border rounded px-3 py-2 mb-4'
-        aria-label='Password'
-      />
-      <Input
-        type='password'
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        placeholder='Confirm Password'
-        className='w-full border rounded px-3 py-2 mb-4'
-        aria-label='Confirm password'
-      />
-      <Button
-        onClick={handleSignUp}
-        disabled={loading}
-        className={`w-full px-4 py-2 bg-green-500 text-white rounded ${
-          loading ? 'opacity-50 cursor-not-allowed' : ''
-        }`}
-      >
-        {loading ? 'Creating Account...' : 'Sign Up'}
-      </Button>
-      {error && (
-        <p className='text-red-500 mt-2' aria-live='polite'>
-          {error}
-        </p>
-      )}
+    <div className='min-h-screen flex items-center justify-center bg-gray-50'>
+      <Card className='w-full max-w-2xl shadow-lg'>
+        <CardHeader className='space-y-1'>
+          <CardTitle className='text-3xl font-bold text-center'>
+            Cadastro
+          </CardTitle>
+          <CardDescription className='text-center text-gray-600'>
+            Crie uma nova conta para começar
+          </CardDescription>
+        </CardHeader>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleSignUp()
+          }}
+        >
+          <CardContent className='space-y-6'>
+            <div className='space-y-2'>
+              <Label htmlFor='name' className='text-sm font-medium'>
+                Name
+              </Label>
+              <div className='relative'>
+                <User
+                  className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+                  size={20}
+                />
+                <Input
+                  id='name'
+                  type='text'
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder='Digite seu nome'
+                  required
+                  className='w-full pl-10 pr-3 py-2 border rounded-md'
+                />
+              </div>
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='email' className='text-sm font-medium'>
+                Email
+              </Label>
+              <div className='relative'>
+                <Mail
+                  className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+                  size={20}
+                />
+                <Input
+                  id='email'
+                  type='email'
+                  placeholder='Digite seu email'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className='w-full pl-10 pr-3 py-2 border rounded-md'
+                />
+              </div>
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='password' className='text-sm font-medium'>
+                Senha
+              </Label>
+              <div className='relative'>
+                <Lock
+                  className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+                  size={20}
+                />
+                <Input
+                  id='password'
+                  type='password'
+                  value={password}
+                  placeholder='Senha'
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className='w-full pl-10 pr-3 py-2 border rounded-md'
+                />
+              </div>
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='confirmPassword' className='text-sm font-medium'>
+                Confirme sua senha
+              </Label>
+              <div className='relative'>
+                <Lock
+                  className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+                  size={20}
+                />
+                <Input
+                  id='confirmPassword'
+                  type='password'
+                  value={confirmPassword}
+                  placeholder='Confirme a senha'
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className='w-full pl-10 pr-3 py-2 border rounded-md'
+                />
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className='flex flex-col space-y-4'>
+            <Button className='w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-300'>
+              {loading ? (
+                <>
+                  <Loader2 className='mr-2 h-5 w-5 animate-spin' />
+                  Carregando...
+                </>
+              ) : (
+                'Cadastrar'
+              )}
+            </Button>
+            {error && (
+              <p
+                className='mt-3 text-sm text-red-500 text-center'
+                aria-live='polite'
+              >
+                {error}
+              </p>
+            )}
+            <div className='text-sm text-center space-x-1'>
+              <span className='text-gray-600'>Already have an account?</span>
+              <Link
+                href='/auth/signin'
+                className='text-blue-600 hover:underline font-medium'
+              >
+                Login
+              </Link>
+            </div>
+          </CardFooter>
+        </form>
+      </Card>
     </div>
   )
 }
-
-export default SignUpPage
