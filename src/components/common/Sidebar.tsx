@@ -1,57 +1,62 @@
 'use client'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { Button } from '../ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Sheet, SheetContent } from '@/components/ui/sheet'
+import { menuItems } from '@/constants/MenuItems'
+import { cn } from '@/lib/utils'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-export default function Sidebar() {
-  const router = useRouter()
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+interface SidebarProps {
+  open: boolean
+  setOpen: (open: boolean) => void
+  canteenId?: string
+}
+
+export default function Sidebar({
+  open,
+  setOpen,
+  canteenId = '1'
+}: SidebarProps) {
+  const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
+
+  const SidebarContent = (
+    <ScrollArea className='h-full'>
+      <div className='px-6 py-4 border-b'>
+        <h2 className='text-lg font-semibold'>Canteen Hub</h2>
+      </div>
+      <nav className='px-3 py-2'>
+        {menuItems.map((item) => (
+          <Link
+            key={item.label}
+            href={item.href(canteenId)}
+            className={cn(
+              'flex items-center h-10 px-3 rounded-md text-sm font-medium transition-colors',
+              pathname === item.href(canteenId)
+                ? 'bg-secondary text-secondary-foreground'
+                : 'text-muted-foreground hover:bg-secondary/50'
+            )}
+            onClick={() => setOpen(false)}
+          >
+            <item.icon className='w-5 h-5 mr-3' />
+            <span>{item.label}</span>
+          </Link>
+        ))}
+      </nav>
+    </ScrollArea>
+  )
 
   return (
-    <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-      <SheetTrigger asChild>
-        <Button variant='ghost' size='icon' className='text-white'>
-          Menu
-        </Button>
-      </SheetTrigger>
-      <SheetContent
-        side='left'
-        className='w-[240px] sm:w-[300px] bg-blue-900 text-white p-0'
-      >
-        <nav className='flex flex-col h-full'>
-          <div className='p-4 border-b border-blue-800'>
-            <h1 className='text-2xl font-bold'>Cantina App</h1>
-          </div>
-          <ul className='flex-1 p-4 space-y-2'>
-            <li>
-              <Button
-                onClick={() => router.push('/')}
-                variant='ghost'
-                className='w-full justify-start text-white hover:bg-blue-800'
-              >
-                Produtos
-              </Button>
-            </li>
-            <li>
-              <Button
-                variant='ghost'
-                onClick={() => router.push('/')}
-                className='w-full justify-start text-white hover:bg-blue-800'
-              >
-                Clientes
-              </Button>
-            </li>
-            {/* <li>
-              <Button
-                variant='ghost'
-                className='w-full justify-start text-white hover:bg-blue-800'
-              >
-                Relatórios
-              </Button>
-            </li> */}
-          </ul>
-        </nav>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetContent side='left' className='p-0 w-[240px]'>
+        {SidebarContent}
       </SheetContent>
     </Sheet>
   )
