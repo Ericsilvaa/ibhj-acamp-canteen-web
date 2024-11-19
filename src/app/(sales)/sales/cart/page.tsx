@@ -59,7 +59,7 @@ const CartPage: React.FC = () => {
           <p className='mt-4'>Total: ${total.toFixed(2)}</p>
           <button
             className='mt-2 px-4 py-2 bg-blue-500 text-white rounded'
-            onClick={() => (window.location.href = '/sales/checkout')}
+            onClick={() => console.log('/sales/checkout')}
           >
             Proceed to Checkout
           </button>

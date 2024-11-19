@@ -15,7 +15,7 @@ const PaymentPage: React.FC = () => {
       // Simula o processamento do pagamento
       await new Promise((resolve) => setTimeout(resolve, 2000))
       alert('Payment successful!')
-      window.location.href = '/sales/summary'
+      console.log('Payment successful!', '/sales/summary')
     } catch (error) {
       console.log(error)
       alert('Payment failed. Please try again.')

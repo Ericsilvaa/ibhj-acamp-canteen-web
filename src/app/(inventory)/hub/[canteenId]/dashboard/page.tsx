@@ -1,7 +1,8 @@
+//  # Visão geral central
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BarChart, DollarSign, ShoppingCart, Users } from 'lucide-react'
 
-export default function Dashboard() {
+export default function HubInventoryDashboard() {
   return (
     <div className='space-y-4'>
       <h2 className='text-2xl font-bold text-blue-900'>Dashboard</h2>
