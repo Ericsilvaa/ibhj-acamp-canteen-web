@@ -1,52 +1,76 @@
 'use client'
-import { CanteenCard } from '@/components/common/cards/CanteenCard'
-import { CustomButton } from '@/components/common/CustomButton'
-import { EmptyState } from '@/components/common/EmptyState'
-import { HeaderHero } from '@/components/common/headers/HeaderHero'
-import { ContainerBase } from '@/components/containers/ContainerBase'
-import { canteens } from '@/constants/temp/canteens'
+
+import { CreateCanteenModal } from '@/components/modals/CreateCanteenModal'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useRouter } from 'next/navigation'
 
-const HomePage: React.FC = () => {
-  const router = useRouter()
-
-  const handleClick = () => {
-    router.push('/canteens/new')
+const canteens = [
+  {
+    id: '1',
+    name: 'Summer Camp Canteen',
+    type: 'Acampamento',
+    responsible: 'John Doe',
+    status: 'active',
+    profit: 1000.0
+  },
+  {
+    id: '2',
+    name: 'School Canteen',
+    type: 'Escola',
+    responsible: 'Jane Smith',
+    status: 'inactive',
+    profit: 500.0
   }
-  return (
-    <ContainerBase>
-      <HeaderHero
-        title='Cantinas'
-        action={
-          <CustomButton title='Criar nova Cantina' onClick={handleClick} />
-        }
-      />
+]
 
-      {/* Conditional rendering */}
-      {canteens.length === 0 ? (
-        <EmptyState
-          title='Nenhuma Cantina Encontrada'
-          message='Você ainda não tem nenhuma cantina. Comece criando uma nova!'
-          buttonLabel='Criar nova Cantina'
-          buttonAction={handleClick}
-        />
-      ) : (
-        <div className='grid grid-cols-1 gap-4'>
-          {canteens.map((canteen) => (
-            <CanteenCard
-              key={canteen.id}
-              id={canteen.id}
-              name={canteen.name}
-              type={canteen.type}
-              responsible={canteen.responsible.name}
-              status={canteen.status}
-              profit={canteen.sales.profit}
-            />
-          ))}
-        </div>
-      )}
-    </ContainerBase>
+export default function CanteensPage() {
+  const router = useRouter()
+  return (
+    <div className='container mx-auto py-10 px-4 space-y-8'>
+      <div className='flex items-center justify-between'>
+        <h1 className='text-3xl font-bold'>Cantinas</h1>
+        <CreateCanteenModal />
+      </div>
+
+      <div className='grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 hover:cursor-pointer'>
+        {canteens.map((canteen) => (
+          <Card
+            key={canteen.id}
+            onClick={() => router.push(`/canteens/${canteen.id}/dashboard`)}
+            className='hover:shadow-lg transition-shadow'
+          >
+            <CardHeader>
+              <CardTitle className='text-xl font-semibold'>
+                {canteen.name}
+              </CardTitle>
+              <Badge
+                variant={
+                  canteen.status === 'active' ? 'success' : 'destructive'
+                }
+                className='mt-1'
+              >
+                {canteen.status === 'active' ? 'Ativo' : 'Inativo'}
+              </Badge>
+            </CardHeader>
+            <CardContent className='space-y-2'>
+              <p className='text-sm text-muted-foreground'>
+                Tipo: <span className='font-medium'>{canteen.type}</span>
+              </p>
+              <p className='text-sm text-muted-foreground'>
+                Responsável:{' '}
+                <span className='font-medium'>{canteen.responsible}</span>
+              </p>
+              <p className='text-sm text-muted-foreground'>
+                Lucro:{' '}
+                <span className='font-medium'>
+                  R${canteen.profit.toFixed(2)}
+                </span>
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
   )
 }
-
-export default HomePage
