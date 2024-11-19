@@ -1,8 +1,15 @@
 import { TransactionType } from './Transaction'
 
 export interface SalesType {
-  totalRevenue: number
-  totalExpenses: number
   profit: number
-  transactions: TransactionType[]
+  totalRevenue?: number
+  totalExpenses?: number
+  transactions?: TransactionType[]
+}
+
+export type SalesHistoryType = {
+  transactionId: string
+  date: string
+  totalAmount: string
+  products: string[]
 }

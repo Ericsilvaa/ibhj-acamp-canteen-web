@@ -24,7 +24,12 @@ const HomePage: React.FC = () => {
 
       {/* Conditional rendering */}
       {canteens.length === 0 ? (
-        <EmptyState />
+        <EmptyState
+          title='Nenhuma Cantina Encontrada'
+          message='Você ainda não tem nenhuma cantina. Comece criando uma nova!'
+          buttonLabel='Criar nova Cantina'
+          buttonAction={handleClick}
+        />
       ) : (
         <div className='grid grid-cols-1 gap-4'>
           {canteens.map((canteen) => (
@@ -33,9 +38,9 @@ const HomePage: React.FC = () => {
               id={canteen.id}
               name={canteen.name}
               type={canteen.type}
-              responsible={canteen.responsible}
+              responsible={canteen.responsible.name}
               status={canteen.status}
-              profit={canteen.profit}
+              profit={canteen.sales.profit}
             />
           ))}
         </div>

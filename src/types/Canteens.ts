@@ -1,7 +1,7 @@
 import { OperatingHoursType } from './Operating'
 import { ProductType } from './Product'
 import { SalesType } from './Sales'
-import { ResponsibleType, TeamType } from './TeamMember'
+import { TeamMemberType, TeamType } from './TeamMember'
 
 export type CanteenType = 'ACAMPAMENTO' | 'MC' | 'MM'
 export type CanteenStatus = 'active' | 'inactive' | 'archived'
@@ -16,11 +16,12 @@ export type CanteenStatusOptionType = {
   label: string
 }
 
-export interface Canteen {
-  canteenId: string
+export interface CanteenRootType {
+  // canteenId: string
+  id: string
   name: string
   type: CanteenType
-  responsible: ResponsibleType
+  responsible: TeamMemberType
   team: TeamType
   products: ProductType[]
   sales: SalesType
@@ -29,4 +30,10 @@ export interface Canteen {
   updatedAt: string // ISO 8601
   status: CanteenStatus
   // donations: DonationType[]
+}
+
+export type CanteenDebtorType = {
+  name: string
+  amount: string
+  dueDate: string
 }

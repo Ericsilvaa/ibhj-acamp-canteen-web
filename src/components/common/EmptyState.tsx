@@ -1,21 +1,26 @@
 'use client'
-import { useRouter } from 'next/navigation'
 import { CustomButton } from './CustomButton'
 
-export const EmptyState = () => {
-  const router = useRouter()
+interface EmptyStateProps {
+  title: string
+  message: string
+  buttonLabel?: string
+  buttonAction?: () => void
+}
 
-  const handleClick = () => {
-    router.push('/canteens/new')
-  }
-
+export const EmptyState = ({
+  title,
+  message,
+  buttonLabel,
+  buttonAction
+}: EmptyStateProps) => {
   return (
     <div className='text-center p-6'>
-      <h2 className='text-lg font-bold mb-2'>Nenhum Cantina Encontrada</h2>
-      <p className='text-sm text-gray-500 mb-4'>
-        {`Você ainda não tem nenhuma cantina. Comece criando uma nova!`}
-      </p>
-      <CustomButton title='Criar nova Cantina' onClick={handleClick} />
+      <h2 className='text-lg font-bold mb-2'>{title}</h2>
+      <p className='text-sm text-gray-500 mb-4'>{message}</p>
+      {buttonLabel && (
+        <CustomButton title={buttonLabel} onClick={buttonAction} />
+      )}
     </div>
   )
 }
