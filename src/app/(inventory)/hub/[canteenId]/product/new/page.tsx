@@ -12,13 +12,14 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { Loader2, PlusCircle } from 'lucide-react'
+import { Link2, Loader2, PlusCircle, UploadCloud } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 
 export default function NewProductPage() {
   const [loading, setLoading] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [useUrl, setUseUrl] = useState(true)
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -35,7 +36,7 @@ export default function NewProductPage() {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
 
-    if (name === 'image') {
+    if (name === 'image' && useUrl) {
       setImagePreview(value)
     }
   }
@@ -44,11 +45,21 @@ export default function NewProductPage() {
     setFormData({ ...formData, category: value })
   }
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = () => setImagePreview(reader.result as string)
+      reader.readAsDataURL(file)
+      setFormData({ ...formData, image: file.name }) // Apenas o nome do arquivo para salvar
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
 
-    // Simulating API call
+    // Simulação de envio
     setTimeout(() => {
       setLoading(false)
       alert('Produto criado com sucesso!')
@@ -67,18 +78,21 @@ export default function NewProductPage() {
 
   return (
     <div className='container mx-auto py-10 px-4'>
-      <Card className='max-w-3xl mx-auto shadow-xl border rounded-lg'>
-        <CardHeader>
-          <CardTitle className='text-2xl font-bold text-center'>
+      <Card className='max-w-4xl mx-auto shadow-lg rounded-xl border overflow-hidden'>
+        <CardHeader className='bg-gradient-to-r from-blue-600 to-blue-500 text-white text-center py-6'>
+          <CardTitle className='text-3xl font-bold'>
             Adicionar Novo Produto
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className='p-6'>
           <form onSubmit={handleSubmit} className='space-y-6'>
             {/* Nome e Categoria */}
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               <div className='space-y-2'>
-                <Label htmlFor='name' className='text-sm font-medium'>
+                <Label
+                  htmlFor='name'
+                  className='text-sm font-medium text-gray-700'
+                >
                   Nome do Produto
                 </Label>
                 <Input
@@ -92,7 +106,10 @@ export default function NewProductPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label htmlFor='category' className='text-sm font-medium'>
+                <Label
+                  htmlFor='category'
+                  className='text-sm font-medium text-gray-700'
+                >
                   Categoria
                 </Label>
                 <Select
@@ -116,7 +133,10 @@ export default function NewProductPage() {
 
             {/* Descrição */}
             <div className='space-y-2'>
-              <Label htmlFor='description' className='text-sm font-medium'>
+              <Label
+                htmlFor='description'
+                className='text-sm font-medium text-gray-700'
+              >
                 Descrição
               </Label>
               <Textarea
@@ -133,7 +153,10 @@ export default function NewProductPage() {
             {/* Preço, Estoque, Unidade */}
             <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
               <div className='space-y-2'>
-                <Label htmlFor='price' className='text-sm font-medium'>
+                <Label
+                  htmlFor='price'
+                  className='text-sm font-medium text-gray-700'
+                >
                   Preço (R$)
                 </Label>
                 <Input
@@ -148,7 +171,10 @@ export default function NewProductPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label htmlFor='stock' className='text-sm font-medium'>
+                <Label
+                  htmlFor='stock'
+                  className='text-sm font-medium text-gray-700'
+                >
                   Estoque
                 </Label>
                 <Input
@@ -162,7 +188,10 @@ export default function NewProductPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label htmlFor='unit' className='text-sm font-medium'>
+                <Label
+                  htmlFor='unit'
+                  className='text-sm font-medium text-gray-700'
+                >
                   Unidade
                 </Label>
                 <Input
@@ -177,25 +206,54 @@ export default function NewProductPage() {
               </div>
             </div>
 
-            {/* URL da Imagem */}
+            {/* URL da Imagem ou Upload */}
             <div className='space-y-2'>
-              <Label htmlFor='image' className='text-sm font-medium'>
-                URL da Imagem
+              <Label className='text-sm font-medium text-gray-700'>
+                Imagem do Produto
               </Label>
-              <Input
-                id='image'
-                name='image'
-                type='url'
-                placeholder='https://exemplo.com/imagem.jpg'
-                value={formData.image}
-                onChange={handleInputChange}
-              />
+              <div className='flex gap-4'>
+                <Button
+                  variant={useUrl ? 'default' : 'outline'}
+                  onClick={() => setUseUrl(true)}
+                  type='button'
+                >
+                  <Link2 className='mr-2 h-4 w-4' />
+                  URL da Imagem
+                </Button>
+                <Button
+                  variant={!useUrl ? 'default' : 'outline'}
+                  onClick={() => setUseUrl(false)}
+                  type='button'
+                >
+                  <UploadCloud className='mr-2 h-4 w-4' />
+                  Fazer Upload
+                </Button>
+              </div>
+              {useUrl ? (
+                <Input
+                  id='image'
+                  name='image'
+                  type='url'
+                  placeholder='https://exemplo.com/imagem.jpg'
+                  value={formData.image}
+                  onChange={handleInputChange}
+                />
+              ) : (
+                <Input
+                  id='file'
+                  type='file'
+                  accept='image/*'
+                  onChange={handleImageUpload}
+                />
+              )}
               {imagePreview && (
                 <div className='mt-4'>
                   <Image
                     src={imagePreview}
                     alt='Preview'
                     className='w-full max-h-64 object-cover rounded-md shadow-md'
+                    width={500}
+                    height={500}
                   />
                 </div>
               )}
@@ -204,7 +262,10 @@ export default function NewProductPage() {
             {/* Botão de Submissão */}
             <Button type='submit' className='w-full' disabled={loading}>
               {loading ? (
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                <>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  Salvando...
+                </>
               ) : (
                 <>
                   <PlusCircle className='mr-2 h-4 w-4' />

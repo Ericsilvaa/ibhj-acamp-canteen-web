@@ -10,9 +10,12 @@ const PATHS = {
     product: {
       new: '/hub/[canteenId]/product/new',
       id: {
-        details: '/hub/[canteenId]/product/[productId]/details',
-        edit: '/hub/[canteenId]/product/[productId]/edit',
-        history: '/hub/[canteenId]/product/[productId]/history'
+        details: (canteenId: string, productId: string) =>
+          `/hub/${canteenId}/product/${productId}/details`,
+        edit: (canteenId: string, productId: string) =>
+          `/hub/${canteenId}/product/${productId}/edit`,
+        history: (canteenId: string, productId: string) =>
+          `/hub/${canteenId}/product/${productId}/history`
       }
     }
   },
@@ -28,16 +31,16 @@ const PATHS = {
       payment: '/sales/checkout/payment',
       review: '/sales/checkout/review',
       feedback: '/sales/checkout/feedback'
-    },
-    canteens: {
-      base: '/canteens',
-      new: '/canteens/new',
-      id: {
-        dashboard: '/canteens/[canteenId]/dashboard',
-        dividends: '/canteens/[canteenId]/dividends',
-        history: '/canteens/[canteenId]/history',
-        reports: '/canteens/[canteenId]/reports'
-      }
+    }
+  },
+  canteens: {
+    base: '/canteens',
+    new: '/canteens/new',
+    id: {
+      dashboard: '/canteens/[canteenId]/dashboard',
+      dividends: '/canteens/[canteenId]/dividends',
+      history: '/canteens/[canteenId]/history',
+      reports: '/canteens/[canteenId]/reports'
     }
   }
   // account: {
