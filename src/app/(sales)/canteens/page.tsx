@@ -24,7 +24,12 @@ const HomePage: React.FC = () => {
 
       {/* Conditional rendering */}
       {canteens.length === 0 ? (
-        <EmptyState />
+        <EmptyState
+          title='Nenhuma Cantina Encontrada'
+          message='Você ainda não tem nenhuma cantina. Comece criando uma nova!'
+          buttonLabel='Criar nova Cantina'
+          buttonAction={handleClick}
+        />
       ) : (
         <div className='grid grid-cols-1 gap-4'>
           {canteens.map((canteen) => (
