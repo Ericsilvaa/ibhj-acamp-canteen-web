@@ -1,6 +1,6 @@
 'use client'
 
-import Header from '../common/Header'
+import Header from '../common/headers/Header'
 
 export default function BaseLayout({
   children
