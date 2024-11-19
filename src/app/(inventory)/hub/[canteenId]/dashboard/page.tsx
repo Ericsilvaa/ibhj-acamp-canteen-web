@@ -1,73 +1,118 @@
-//  # Visão geral central
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { BarChart, DollarSign, ShoppingCart, Users } from 'lucide-react'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import { DollarSign, ShoppingCart, TrendingUp, Utensils } from 'lucide-react'
 
-export default function HubInventoryDashboard() {
+async function getCanteenData(canteenId: string) {
+  // This is a placeholder function. Replace it with an API call in a real application.
+  return {
+    name: `Hub ${canteenId}`,
+    totalSales: 15000,
+    totalOrders: 500,
+    averageOrderValue: 30,
+    topSellingItem: 'Chicken Sandwich'
+  }
+}
+
+export default async function CanteenDashboard({
+  params
+}: {
+  params: { canteenId: string }
+}) {
+  const canteenData = await getCanteenData(params.canteenId)
+
   return (
-    <div className='space-y-4'>
-      <h2 className='text-2xl font-bold text-blue-900'>Dashboard</h2>
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Vendas Totais</CardTitle>
-            <DollarSign className='h-4 w-4 text-muted-foreground' />
+    <div className='min-h-screen p-6'>
+      <h1 className='text-4xl font-extrabold text-gray-900 mb-6'>
+        {canteenData.name} Dashboard
+      </h1>
+
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+        <Card className='rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300'>
+          <CardHeader className='flex flex-row items-center justify-between pb-2'>
+            <CardTitle className='text-sm font-medium'>Total Sales</CardTitle>
+            <DollarSign className='h-5 w-5 text-green-500' />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>R$ 45.231,89</div>
-            <p className='text-xs text-muted-foreground'>
-              +20.1% em relação ao mês anterior
-            </p>
+            <div className='text-2xl font-bold text-gray-800'>
+              ${canteenData.totalSales.toLocaleString()}
+            </div>
+            <p className='text-xs text-gray-500'>+20.1% from last month</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+
+        <Card className='rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300'>
+          <CardHeader className='flex flex-row items-center justify-between pb-2'>
+            <CardTitle className='text-sm font-medium'>Total Orders</CardTitle>
+            <ShoppingCart className='h-5 w-5 text-blue-500' />
+          </CardHeader>
+          <CardContent>
+            <div className='text-2xl font-bold text-gray-800'>
+              {canteenData.totalOrders}
+            </div>
+            <p className='text-xs text-gray-500'>+15% from last month</p>
+          </CardContent>
+        </Card>
+
+        <Card className='rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300'>
+          <CardHeader className='flex flex-row items-center justify-between pb-2'>
             <CardTitle className='text-sm font-medium'>
-              Novos Clientes
+              Average Order Value
             </CardTitle>
-            <Users className='h-4 w-4 text-muted-foreground' />
+            <TrendingUp className='h-5 w-5 text-yellow-500' />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>+2350</div>
-            <p className='text-xs text-muted-foreground'>
-              +180.1% em relação ao mês anterior
-            </p>
+            <div className='text-2xl font-bold text-gray-800'>
+              ${canteenData.averageOrderValue}
+            </div>
+            <p className='text-xs text-gray-500'>+5% from last month</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+
+        <Card className='rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300'>
+          <CardHeader className='flex flex-row items-center justify-between pb-2'>
             <CardTitle className='text-sm font-medium'>
-              Produtos Vendidos
+              Top Selling Item
             </CardTitle>
-            <ShoppingCart className='h-4 w-4 text-muted-foreground' />
+            <Utensils className='h-5 w-5 text-red-500' />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>+12,234</div>
-            <p className='text-xs text-muted-foreground'>
-              +19% em relação ao mês anterior
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Lucro</CardTitle>
-            <BarChart className='h-4 w-4 text-muted-foreground' />
-          </CardHeader>
-          <CardContent>
-            <div className='text-2xl font-bold'>R$ 15.231,89</div>
-            <p className='text-xs text-muted-foreground'>
-              +4% em relação ao mês anterior
-            </p>
+            <div className='text-2xl font-bold text-gray-800'>
+              {canteenData.topSellingItem}
+            </div>
+            <p className='text-xs text-gray-500'>250 units sold this month</p>
           </CardContent>
         </Card>
       </div>
-      <Card>
+
+      <Card className='rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 mt-8'>
         <CardHeader>
-          <CardTitle>Vendas por Categoria</CardTitle>
+          <CardTitle className='text-lg font-semibold text-gray-800'>
+            Recent Activity
+          </CardTitle>
+          <CardDescription className='text-gray-600'>
+            You have 3 new orders in the last 24 hours.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className='h-[200px] bg-gray-200 flex items-center justify-center'>
-            Gráfico de Vendas por Categoria (a ser implementado)
-          </div>
+          <ul className='space-y-3'>
+            <li className='flex items-center justify-between'>
+              <span>Order #12345</span>
+              <span className='text-sm text-gray-500'>2 hours ago</span>
+            </li>
+            <li className='flex items-center justify-between'>
+              <span>Order #12346</span>
+              <span className='text-sm text-gray-500'>5 hours ago</span>
+            </li>
+            <li className='flex items-center justify-between'>
+              <span>Order #12347</span>
+              <span className='text-sm text-gray-500'>8 hours ago</span>
+            </li>
+          </ul>
         </CardContent>
       </Card>
     </div>

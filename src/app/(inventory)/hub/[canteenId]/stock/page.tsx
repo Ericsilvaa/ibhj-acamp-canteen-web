@@ -1,7 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -10,105 +17,215 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { useEffect, useState } from 'react'
+import { ArrowUpDown, Package, RefreshCw, Search } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
-export default function ProductStockPage() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [products, setProducts] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+type StockItemType = {
+  id: string
+  name: string
+  category: string
+  quantity: number
+  unit: string
+  lastUpdated: string
+}
 
-  useEffect(() => {
-    // Simula a busca dos dados de produtos
-    const fetchProducts = async () => {
-      // Mock de dados (substitua por chamada à API)
-      const mockProducts = [
-        { id: 'prod1', name: 'Coxinha', stock: 50 },
-        { id: 'prod2', name: 'Refrigerante', stock: 30 },
-        { id: 'prod3', name: 'Salgadinho', stock: 15 }
-      ]
-      setTimeout(() => {
-        setProducts(mockProducts)
-        setLoading(false)
-      }, 1000)
+const StockItem: StockItemType[] = [
+  {
+    id: '1',
+    name: 'Apples',
+    category: 'Fruit',
+    quantity: 50,
+    unit: 'kg',
+    lastUpdated: '2023-05-15'
+  },
+  {
+    id: '2',
+    name: 'Chicken Breast',
+    category: 'Meat',
+    quantity: 30,
+    unit: 'kg',
+    lastUpdated: '2023-05-14'
+  },
+  {
+    id: '3',
+    name: 'Milk',
+    category: 'Dairy',
+    quantity: 100,
+    unit: 'L',
+    lastUpdated: '2023-05-16'
+  },
+  {
+    id: '4',
+    name: 'Bread',
+    category: 'Bakery',
+    quantity: 75,
+    unit: 'loaves',
+    lastUpdated: '2023-05-15'
+  },
+  {
+    id: '5',
+    name: 'Tomatoes',
+    category: 'Vegetable',
+    quantity: 40,
+    unit: 'kg',
+    lastUpdated: '2023-05-16'
+  }
+]
+
+export default function StockList() {
+  const [stockItems, setStockItems] = useState<StockItemType[]>(StockItem)
+  const [isLoading, setIsLoading] = useState(true)
+  const [sortColumn, setSortColumn] = useState<keyof StockItemType>('name')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+  const [filterCategory, setFilterCategory] = useState<string>('all')
+  const [searchTerm, setSearchTerm] = useState('')
+  const router = useRouter()
+  const canteenId = '1'
+
+  const handleSort = (column: keyof StockItemType) => {
+    if (column === sortColumn) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortColumn(column)
+      setSortDirection('asc')
     }
-
-    fetchProducts()
-  }, [])
-
-  const handleUpdateStock = (id: string, newStock: number) => {
-    // Atualiza o estoque localmente (substitua por chamada à API)
-    setProducts((prev) =>
-      prev.map((product) =>
-        product.id === id ? { ...product, stock: newStock } : product
-      )
-    )
-    alert(
-      `Estoque atualizado para o produto ID: ${id}, novo estoque: ${newStock}`
-    )
   }
 
-  if (loading) {
-    return (
-      <div className='flex items-center justify-center min-h-screen bg-blue-50'>
-        <p className='text-blue-900 font-semibold'>Carregando produtos...</p>
-      </div>
+  const resetFilters = () => {
+    setSearchTerm('')
+    setFilterCategory('all')
+  }
+
+  const sortedAndFilteredItems = stockItems
+    .filter(
+      (item) => filterCategory === 'all' || item.category === filterCategory
     )
+    .filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (a[sortColumn] < b[sortColumn]) return sortDirection === 'asc' ? -1 : 1
+      if (a[sortColumn] > b[sortColumn]) return sortDirection === 'asc' ? 1 : -1
+      return 0
+    })
+
+  const uniqueCategories = Array.from(
+    new Set(stockItems.map((item) => item.category))
+  )
+
+  if (isLoading) {
+    return <div className='text-center py-4 text-lg'>Loading stock data...</div>
   }
 
   return (
-    <div className='flex items-center justify-center min-h-screen bg-blue-50'>
-      <Card className='w-full max-w-4xl bg-white border border-blue-200 shadow-md'>
-        <CardHeader>
-          <CardTitle className='text-2xl font-bold text-blue-900'>
-            Gerenciamento de Estoque
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Produto</TableHead>
-                <TableHead>Estoque Atual</TableHead>
-                <TableHead>Ação</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.stock}</TableCell>
-                  <TableCell>
-                    <div className='flex items-center gap-2'>
-                      <Input
-                        type='number'
-                        min='0'
-                        placeholder='Novo estoque'
-                        className='w-24'
-                        onChange={(e) =>
-                          handleUpdateStock(
-                            product.id,
-                            parseInt(e.target.value, 10)
-                          )
-                        }
-                      />
-                      <Button
-                        variant='outline'
-                        className='text-blue-900 border-blue-900'
-                        onClick={
-                          () =>
-                            handleUpdateStock(product.id, product.stock + 10) // Simula a adição de 10 itens
-                        }
-                      >
-                        Atualizar
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
+    <div className='space-y-4 p-6'>
+      <div className='flex flex-col sm:flex-row justify-between items-center gap-4'>
+        <div className='flex items-center w-full sm:w-auto'>
+          <Search className='w-4 h-4 mr-2 text-gray-500' />
+          <Input
+            placeholder='Search items...'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className='max-w-sm'
+          />
+        </div>
+        <div className='flex gap-4'>
+          <Select value={filterCategory} onValueChange={setFilterCategory}>
+            <SelectTrigger className='w-full sm:w-[180px]'>
+              <SelectValue placeholder='Filter by category' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='all'>All Categories</SelectItem>
+              {uniqueCategories.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
               ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </SelectContent>
+          </Select>
+          <Button variant='ghost' size='sm' onClick={resetFilters}>
+            <RefreshCw className='mr-2 h-4 w-4' />
+            Reset
+          </Button>
+        </div>
+      </div>
+
+      <Table className='w-full border'>
+        <TableHeader>
+          <TableRow>
+            <TableHead
+              onClick={() => handleSort('name')}
+              className='cursor-pointer hover:bg-gray-100'
+            >
+              Name{' '}
+              {sortColumn === 'name' && (
+                <ArrowUpDown className='inline ml-2 h-4 w-4' />
+              )}
+            </TableHead>
+            <TableHead
+              onClick={() => handleSort('category')}
+              className='cursor-pointer hover:bg-gray-100'
+            >
+              Category{' '}
+              {sortColumn === 'category' && (
+                <ArrowUpDown className='inline ml-2 h-4 w-4' />
+              )}
+            </TableHead>
+            <TableHead
+              onClick={() => handleSort('quantity')}
+              className='cursor-pointer hover:bg-gray-100'
+            >
+              Quantity{' '}
+              {sortColumn === 'quantity' && (
+                <ArrowUpDown className='inline ml-2 h-4 w-4' />
+              )}
+            </TableHead>
+            <TableHead>Unit</TableHead>
+            <TableHead
+              onClick={() => handleSort('lastUpdated')}
+              className='cursor-pointer hover:bg-gray-100'
+            >
+              Last Updated{' '}
+              {sortColumn === 'lastUpdated' && (
+                <ArrowUpDown className='inline ml-2 h-4 w-4' />
+              )}
+            </TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {sortedAndFilteredItems.length > 0 ? (
+            sortedAndFilteredItems.map((item) => (
+              <TableRow key={item.id} className='hover:bg-gray-50'>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.category}</TableCell>
+                <TableCell>{item.quantity}</TableCell>
+                <TableCell>{item.unit}</TableCell>
+                <TableCell>{item.lastUpdated}</TableCell>
+                <TableCell>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={() =>
+                      router.push(`/hub/${canteenId}/stock/${item.id}`)
+                    }
+                  >
+                    <Package className='mr-2 h-4 w-4' />
+                    Update
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6} className='text-center py-4'>
+                No items found.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   )
 }
