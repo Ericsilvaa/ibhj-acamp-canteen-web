@@ -1,6 +1,6 @@
 //  # Página principal do carrinho
 'use client'
-
+import { CustomButton } from '@/components/common/CustomButton'
 import { useState } from 'react'
 
 type CartItem = {
@@ -57,12 +57,10 @@ const CartPage: React.FC = () => {
             </div>
           ))}
           <p className='mt-4'>Total: ${total.toFixed(2)}</p>
-          <button
-            className='mt-2 px-4 py-2 bg-blue-500 text-white rounded'
+          <CustomButton
             onClick={() => console.log('/sales/checkout')}
-          >
-            Proceed to Checkout
-          </button>
+            title='Fazer o Check-out'
+          />
         </div>
       )}
     </div>
