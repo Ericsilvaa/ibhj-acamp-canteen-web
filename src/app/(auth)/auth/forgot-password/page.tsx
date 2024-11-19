@@ -11,13 +11,16 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PATHS } from '@/constants/paths'
 import { auth } from '@/lib/firebase'
 import { sendPasswordResetEmail } from 'firebase/auth'
 import { Mail } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function ForgotPasswordPage() {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -35,6 +38,7 @@ export default function ForgotPasswordPage() {
     try {
       await sendPasswordResetEmail(auth, email)
       setSuccess('Password reset email sent successfully')
+      router.push(PATHS.auth.signin)
     } catch (err: any) {
       console.error('Error sending password reset email:', err.message)
       setError(
@@ -103,7 +107,7 @@ export default function ForgotPasswordPage() {
             </p>
           )}
           <Link
-            href='/auth/signin'
+            href={PATHS.auth.signin}
             className='text-sm text-blue-600 hover:underline text-center'
           >
             Voltar para Login

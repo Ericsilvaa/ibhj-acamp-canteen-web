@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PATHS } from '@/constants/paths'
 import { auth } from '@/lib/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { Loader2, Lock, Mail, User } from 'lucide-react'
@@ -43,7 +44,7 @@ export default function SignUpPage() {
     setError('')
     try {
       await createUserWithEmailAndPassword(auth, email, password)
-      router.push('/')
+      router.push(PATHS.auth.signin)
     } catch (err: any) {
       console.error('Error during sign-up:', err.message)
       setError(
@@ -76,7 +77,7 @@ export default function SignUpPage() {
           <CardContent className='space-y-6'>
             <div className='space-y-2'>
               <Label htmlFor='name' className='text-sm font-medium'>
-                Name
+                Nome
               </Label>
               <div className='relative'>
                 <User
@@ -177,7 +178,7 @@ export default function SignUpPage() {
             <div className='text-sm text-center space-x-1'>
               <span className='text-gray-600'>Already have an account?</span>
               <Link
-                href='/auth/signin'
+                href={PATHS.auth.signin}
                 className='text-blue-600 hover:underline font-medium'
               >
                 Login

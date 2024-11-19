@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PATHS } from '@/constants/paths'
 import { auth } from '@/lib/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { Loader2, Lock, Mail } from 'lucide-react'
@@ -35,7 +36,7 @@ const SignInPage: React.FC = () => {
     setError('')
     try {
       await signInWithEmailAndPassword(auth, email, password)
-      router.push('/')
+      router.push(PATHS.canteens.base)
     } catch (err: any) {
       console.error('Error during sign-in:', err.message)
       setError(
@@ -55,7 +56,7 @@ const SignInPage: React.FC = () => {
       <Card className='w-full max-w-2xl shadow-lg'>
         <CardHeader className='space-y-1'>
           <CardTitle className='text-3xl font-bold text-center'>
-            Bem-vindo de volta
+            Bem-vindo a Cantina!
           </CardTitle>
           <CardDescription className='text-center text-gray-600'>
             Faça login com sua conta para continuar.
@@ -131,14 +132,14 @@ const SignInPage: React.FC = () => {
             <div className='text-sm text-center space-x-1'>
               <span className='text-gray-600'> Não tem uma conta?</span>
               <Link
-                href='/auth/signup'
+                href={PATHS.auth.signup}
                 className='text-blue-600 hover:underline font-medium'
               >
                 Cadastre-se
               </Link>
             </div>
             <Link
-              href='/auth/forgot-password'
+              href={PATHS.auth.forgotPassword}
               className='text-sm text-blue-600 hover:underline text-center'
             >
               Esqueceu sua senha?
