@@ -27,9 +27,7 @@ export default function BaseLayout({
           userName={userData.name}
           userAvatar={userData.avatarUrl}
         />
-        <main className='flex-1 overflow-x-hidden overflow-y-auto bg-background'>
-          <div className='container mx-auto px-4 py-8'>{children}</div>
-        </main>
+        <div className='container mx-auto px-4 py-8'>{children}</div>
         <Footer />
       </div>
     </div>
